@@ -1,8 +1,11 @@
 // API sécurisée du site EPP Barrage Soubré (Netlify Functions + Supabase).
 // Variables d'environnement à définir dans Netlify : SUPABASE_URL, SUPABASE_SERVICE_KEY, AUTH_SECRET (et SETUP_CODE, recommandé).
 import {randomBytes,scryptSync,timingSafeEqual,createHmac} from 'node:crypto';
-const CL=['CP1','CP2','CE1','CE2','CM1','CM2'],E=k=>process.env[k]||'',enc=encodeURIComponent;
-async function sb(t,method='GET',q='',body,h={}){const r=await fetch(`${E('SUPABASE_URL').replace(/\/$/,'')}/rest/v1/${t}${q}`,{method,headers:{apikey:E('SUPABASE_SERVICE_KEY'),Authorization:'Bearer '+E('SUPABASE_SERVICE_KEY'),'Content-Type':'application/json',...h},body:body===undefined?undefined:JSON.stringify(body)});if(!r.ok)throw new Error('db '+r.status);return r.status===204?null:await r.json().catch(()=>null)}
+const CL=['CP1','CP2','CE1','CE2','CM1','CM2'],E=k=>(process.env[k]||'').trim().replace(/^["']|["']$/g,'').trim(),enc=encodeURIComponent;
+async function sb(t,method='GET',q='',body,h={}){const key=E('SUPABASE_SERVICE_KEY'),base=E('SUPABASE_URL').replace(/\/rest\/v1\/?$/,'').replace(/\/+$/,'');
+ // Les clés « sb_secret_ » ne sont pas des JWT : elles vont uniquement dans l'en-tête apikey.
+ const auth=key.startsWith('sb_')?{}:{Authorization:'Bearer '+key};
+ const r=await fetch(`${base}/rest/v1/${t}${q}`,{method,headers:{apikey:key,...auth,'Content-Type':'application/json',...h},body:body===undefined?undefined:JSON.stringify(body)});if(!r.ok)throw new Error('db '+r.status);return r.status===204?null:await r.json().catch(()=>null)}
 const rows=q=>sb('epp_store','GET','?select=key,data'+q);
 const getRow=async k=>(await sb('epp_store','GET','?select=data&key=eq.'+enc(k)))?.[0]?.data;
 const putRows=a=>sb('epp_store','POST','',a.map(([key,data])=>({key,data,updated_at:new Date().toISOString()})),{Prefer:'resolution=merge-duplicates'});
