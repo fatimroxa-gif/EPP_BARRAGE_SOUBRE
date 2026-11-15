@@ -61,5 +61,5 @@ export default async req=>{
    if([...up.map(x=>x&&x.key),...del].some(k=>typeof k!=='string'||!ok(k)))return json({error:'Action non autorisée.'},403);
    if(up.length)await putRows(up.map(x=>[x.key,x.data]));if(del.length)await sb('epp_store','DELETE','?key='+inList(del));return json({ok:true})}
   return json({error:'Introuvable.'},404);
- }catch(e){return json({error:e.message==='AUTH_SECRET'?'Configuration serveur incomplète (AUTH_SECRET).':'Erreur serveur. Réessayez.'},500)}
+ }catch(e){console.error('api error:',p,e.message);return json({error:e.message==='AUTH_SECRET'?'Configuration serveur incomplète (AUTH_SECRET).':'Erreur serveur. Réessayez.'},500)}
 };
