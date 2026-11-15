@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>EPP BARRAGE SOUBRE</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="grades" data-roles="director,teacher"><main><h2>Évaluation mensuelle</h2>
+<div class="card"><label for="cls">Classe</label><select id="cls"></select></div>
+<div class="card"><h3>Matières de la classe</h3><p id="subjHint"></p><div id="subjList"></div></div>
+<div class="card" id="entry"><h3>Composition mensuelle</h3><label for="stu">Élève</label><select id="stu"></select><label for="month">Mois</label><select id="month"></select><div id="fields"></div><p>Moyenne du mois (calculée automatiquement) : <b id="mavg">—</b></p><button id="saveG">Enregistrer les notes</button></div>
+<div class="card" id="mycode" hidden><h3>Mon mot de passe</h3><label for="oldc">Mot de passe actuel</label><input id="oldc" type="password" autocomplete="current-password"><label for="newc">Nouveau mot de passe (6 caractères minimum)</label><input id="newc" type="password" autocomplete="new-password"><br><button id="chg">Changer mon mot de passe</button></div>
+<div class="card" id="recap"><h3>Notes de la classe</h3><table id="rtab"></table></div>
+</main><script src="app.js"></script></body></html>
